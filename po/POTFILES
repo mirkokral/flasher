@@ -1,0 +1,7 @@
+data/com.github.mirkokral.flasher.desktop.in
+data/com.github.mirkokral.flasher.metainfo.xml.in
+data/com.github.mirkokral.flasher.gschema.xml
+src/main.vala
+src/window.vala
+src/window.ui
+src/win.css

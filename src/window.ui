@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.90.4 -->
+<interface>
+  <!-- interface-name window.ui -->
+  <requires lib="Adw" version="1.0"/>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="gio" version="2.0"/>
+  <requires lib="libadwaita" version="1.4"/>
+  <template class="NexilityWindow" parent="AdwApplicationWindow">
+    <property name="default-height">300</property>
+    <property name="default-width">600</property>
+    <child>
+      <object class="GtkStack" id="mainStack">
+        <property name="transition-duration">250</property>
+        <property name="transition-type">over-right</property>
+        <property name="visible-child-name">flashin</property>
+        <child>
+          <object class="GtkStackPage" id="rizz">
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar" id="header_bar">
+                    <child type="title">
+                      <object class="GtkDropDown" id="platformsel">
+                        <property name="enable-search">True</property>
+                        <!-- Custom object fragments -->
+                        <property name="model">
+                          <object class="GtkStringList">
+                            <items>
+                              <item>ESP32-S3</item>
+                              <item>ESP32</item>
+                              <item>AVR</item>
+                              <item>micro:bit</item>
+                              <item>Android</item>
+                            </items>
+                          </object>
+                        </property>
+                        <property name="selected">1</property>
+                      </object>
+                    </child>
+                    <child type="end">
+                      <object class="GtkMenuButton">
+                        <property name="icon-name">open-menu-symbolic</property>
+                        <property name="menu-model">primary_menu</property>
+                        <property name="primary">True</property>
+                        <property name="tooltip-text" translatable="yes">Menu</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="bottom">
+                  <object class="GtkActionBar">
+                    <child type="end">
+                      <object class="GtkButton" id="flashBtn">
+                        <property name="icon-name">document-save</property>
+                        <property name="tooltip-text">Flash package to target's memory</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="eraseBtn">
+                        <property name="halign">end</property>
+                        <property name="has-tooltip">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="hexpand-set">True</property>
+                        <property name="icon-name">edit-delete</property>
+                        <property name="tooltip-text">Erase target's memory</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBox" id="page1c">
+                    <child>
+                      <object class="GtkListBoxRow">
+                        <property name="activatable">False</property>
+                        <property name="selectable">False</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="hexpand">True</property>
+                            <property name="hexpand-set">True</property>
+                            <property name="margin-end">7</property>
+                            <property name="margin-start">7</property>
+                            <property name="vexpand">True</property>
+                            <property name="vexpand-set">True</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="halign">center</property>
+                                <property name="label">Package</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwSplitButton" id="openbtn">
+                                <property name="halign">end</property>
+                                <property name="hexpand">True</property>
+                                <property name="label">Open</property>
+                                <property name="popover">
+                                  <object class="GtkPopoverMenu">
+                                    <property name="menu-model">shmegma</property>
+                                    <child>
+                                      <menu id="shmegma">
+                                        <item>
+                                          <attribute name="label">Download CircuitPython</attribute>
+                                        </item>
+                                        <item>
+                                          <attribute name="label">Download MicroPython</attribute>
+                                        </item>
+                                      </menu>
+                                    </child>
+                                  </object>
+                                </property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">rizz</property>
+            <property name="title">rizz</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage" id="flashin">
+            <property name="child">
+              <object class="GtkBox" id="colov">
+                <property name="css-classes">black</property>
+                <property name="hexpand">True</property>
+                <property name="hexpand-set">True</property>
+                <property name="homogeneous">True</property>
+                <property name="vexpand">True</property>
+                <property name="vexpand-set">True</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="halign">center</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="GtkLabel" id="fLabel">
+                        <property name="css-classes">large-title</property>
+                        <property name="halign">center</property>
+                        <property name="label">Flashing...</property>
+                        <property name="valign">start</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkProgressBar" id="fProgressBar">
+                        <property name="fraction">0.5</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="name">flashin</property>
+            <property name="title">flashin</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="action">app.preferences</attribute>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+      </item>
+      <item>
+        <attribute name="action">win.show-help-overlay</attribute>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.about</attribute>
+        <attribute name="label" translatable="yes">_About Nexility</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
