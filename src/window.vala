@@ -19,19 +19,19 @@
  */
 
 
-public async void nap (uint interval, int priority = GLib.Priority.DEFAULT) {
-  GLib.Timeout.add (interval, () => {
-      nap.callback ();
-      return false;
+public async void nap(uint interval, int priority = GLib.Priority.DEFAULT) {
+    GLib.Timeout.add(interval, () => {
+        nap.callback();
+        return false;
     }, priority);
-  yield;
+    yield;
 }
 
 namespace Nexility {
-    [GtkTemplate (ui = "/com/github/mirkokral/flasher/window.ui")]
+    [GtkTemplate(ui = "/com/github/mirkokral/flasher/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
-        private Gtk.FileDialog fdial = new Gtk.FileDialog ();
+        private Gtk.FileDialog fdial = new Gtk.FileDialog();
         private GLib.File? chosen;
         private bool isChooserOpen = false;
 
@@ -48,7 +48,7 @@ namespace Nexility {
         private unowned Gtk.Stack mainStack;
 
         [GtkChild]
-        private unowned Gtk.Box colov;
+        private unowned Gtk.DropDown platformsel;
 
         [GtkChild]
         private unowned Gtk.Label fLabel;
@@ -59,18 +59,19 @@ namespace Nexility {
         public bool operating = false;
 
         private async void flash() {
-            if(chosen != null && !operating) {
+            unowned GLib.Object? xn = platformsel.get_selected_item();
+            if (chosen != null && xn != null && !operating) {
                 operating = true;
-                fLabel.set_text("Flashing...");
+                print(@"$(xn.get_type().name())");
+                fLabel.set_text(@"Flashing on $(((Gtk.StringObject)xn).get_string())....");
                 fProgressBar.set_fraction(0);
                 mainStack.set_transition_duration(500);
                 mainStack.set_transition_type(Gtk.StackTransitionType.OVER_LEFT);
                 mainStack.set_visible_child_name("flashin");
-                this.fullscreen();
                 for (var i = 0; i < 101; i++) {
-                    fProgressBar.set_fraction(i/100.0);
+                    fProgressBar.set_fraction(i / 100.0);
                     print(i.to_string());
-                    yield nap (50);
+                    yield nap(50);
                 }
                 mainStack.set_transition_duration(500);
                 mainStack.set_transition_type(Gtk.StackTransitionType.UNDER_RIGHT);
@@ -81,11 +82,16 @@ namespace Nexility {
                 md.add_response("ok", "OK");
 
                 md.show();
+            } else if (xn == null) {
+                Adw.MessageDialog md = new Adw.MessageDialog(this, "Failed to start flashing", "Platform invalid!");
+                md.add_response("ok", "OK");
+
+                md.show();
             }
         }
 
         private async void erase() {
-            if(!operating) {
+            if (!operating) {
                 operating = true;
                 fLabel.set_text("Erasing...");
                 fProgressBar.set_fraction(0);
@@ -93,9 +99,9 @@ namespace Nexility {
                 mainStack.set_transition_type(Gtk.StackTransitionType.OVER_LEFT);
                 mainStack.set_visible_child_name("flashin");
                 for (var i = 0; i < 101; i++) {
-                    fProgressBar.set_fraction(i/100.0);
+                    fProgressBar.set_fraction(i / 100.0);
                     print(i.to_string());
-                    yield nap (100);
+                    yield nap(100);
                 }
                 mainStack.set_transition_duration(500);
                 mainStack.set_transition_type(Gtk.StackTransitionType.UNDER_RIGHT);
@@ -104,20 +110,19 @@ namespace Nexility {
             }
         }
 
-
-        public Window (Gtk.Application app) {
-            Object (application: app);
-            Gtk.FileFilter ff = new Gtk.FileFilter ();
+        public Window(Gtk.Application app) {
+            Object(application : app);
+            Gtk.FileFilter ff = new Gtk.FileFilter();
             ff.name = "Binary File";
             ff.add_suffix("bin");
             fdial.default_filter = ff;
-            Gtk.FileFilter ff2 = new Gtk.FileFilter ();
+            Gtk.FileFilter ff2 = new Gtk.FileFilter();
             ff2.name = "Hexadecimal File";
             ff2.add_suffix("hex");
-            Gtk.FileFilter ff3 = new Gtk.FileFilter ();
+            Gtk.FileFilter ff3 = new Gtk.FileFilter();
             ff3.name = "Any file - Treaded like binary";
-            ff3.add_pattern ("*");
-            GLib.ListStore fils = new GLib.ListStore(typeof(Gtk.FileFilter));
+            ff3.add_pattern("*");
+            GLib.ListStore fils = new GLib.ListStore(typeof (Gtk.FileFilter));
             fils.append(ff);
             fils.append(ff2);
             fils.append(ff3);
@@ -129,22 +134,22 @@ namespace Nexility {
             flashBtn.clicked.connect(flash);
             eraseBtn.clicked.connect(erase);
             openbtn.clicked.connect(() => {
-                if(!isChooserOpen) {
+                if (!isChooserOpen) {
                     Gtk.Window w = this;
-                    Cancellable c = new Cancellable ();
+                    Cancellable c = new Cancellable();
                     isChooserOpen = true;
                     fdial.open.begin(w, c, (obj, res) => {
                         try {
                             var oc = fdial.open.end(res);
-                            if(oc != null) {
+                            if (oc != null) {
                                 chosen = oc;
                             }
-                        } catch(GLib.Error e) {
-
-                        };
-                        if(chosen != null) {
+                        } catch (GLib.Error e) {
+                        }
+                        ;
+                        if (chosen != null) {
                             print(chosen.get_path());
-                            openbtn.set_label(chosen.get_basename ()    );
+                            openbtn.set_label(chosen.get_basename());
                         } else {
                             print("null");
                             openbtn.set_label("Open");

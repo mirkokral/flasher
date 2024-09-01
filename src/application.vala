@@ -31,12 +31,12 @@ namespace Nexility {
                 { "quit", this.quit }
             };
             this.add_action_entries (action_entries, this);
-            this.set_accels_for_action ("app.quit", {"<primary>q"});
+            this.set_accels_for_action ("app.quit", { "<primary>q" });
         }
 
         public override void activate () {
-            Gtk.CssProvider provider = new Gtk.CssProvider();;
-            provider.load_from_string("""
+            Gtk.CssProvider provider = new Gtk.CssProvider ();;
+            provider.load_from_string ("""
             .black {
                 background-color: @theme_bg_color;
             }
@@ -49,8 +49,6 @@ namespace Nexility {
             }
 
             win.present ();
-
-
         }
 
         private void on_about_action () {
